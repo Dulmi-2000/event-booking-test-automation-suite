@@ -17,13 +17,12 @@ public class LoginPage {
     }
 
     // Locators
-    By signInBtn = By.xpath("//a[contains(text(),'Sign In')]"); // Nav bar button to open login form
+    By signInBtn = By.xpath("//a[contains(text(),'Login')]"); // Nav bar button to open login form
     By email = By.id("email");
     By password = By.id("password");
-    By loginBtn = By.xpath("//button[contains(text(),'Sign In')]"); // Login button inside form
+    By loginBtn = By.xpath("//button[contains(text(),'Login')]"); // Login button inside form
 
-    // No fixed ID in Next.js + Tailwind — use text for error messages and dashboard
-    By dashboard = By.xpath("//*[contains(text(),'Dashboard') or contains(text(),'Welcome')]"); // adjust to your dashboard text
+    By dashboard = By.xpath("//*[contains(text(),'Dashboard') or contains(text(),'Welcome')]"); 
 
     /**
      * Performs login
