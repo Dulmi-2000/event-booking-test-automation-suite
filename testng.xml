@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suite name="Event Booking Test Suite" verbose="1">
+  <test name="EventPageTests">
+    <classes>
+      <class name="tests.EventPageTest"/>
+    </classes>
+  </test>
+</suite>
