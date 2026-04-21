@@ -14,10 +14,10 @@ public class BaseTest {
 
     @BeforeMethod
     public void setup() {
-    	
-    	driver= new ChromeDriver();
-    	wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-		driver.get("http://localhost:3000");
+
+        driver = new ChromeDriver();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        driver.get("http://localhost:3000");
     }
 
     @AfterMethod
