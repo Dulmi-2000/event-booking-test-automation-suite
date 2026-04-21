@@ -12,7 +12,7 @@ public class SignupTest extends BaseTest {
     public Object[][] signupData() {
         return new Object[][] {
             // {fullName, email, password, confirmPassword, expectedResult, expectedErrorMsg}
-            {"Kavindya","kavindya@gmail.com", "123456789","123456789", true, ""}, // new user, positive
+            {"Kavindya","111kavindya@gmai.com", "123456789","123456789", true, ""}, // new user, positive
             {"Kavindya Wijenayaka","kavindyawijenayaka12@gmail.com", "123456789","123456789", false, "Existing User"}, // all existing, general error
             {"Kavindya Wijenayaka","kavindyawijenayaka12@gmail.com", "123iiiiii","123iiiiii", false, "Existing User"}, // name & email existing
             {"Kavindya Wijenayaka","kavindya12@gmail.com", "123iiiiii","123iiiiii", false, "Existing User Name"}, // name existing

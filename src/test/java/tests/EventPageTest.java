@@ -8,154 +8,131 @@ import org.testng.annotations.Test;
 
 public class EventPageTest extends BaseTest {
 
-    // ─── Event Listing Page Tests ───────────────────────────────────────
+    // ── Listing page tests ──────────────────────────────────────────────
 
     @Test
     public void testEventsAreDisplayed() {
-        driver.get("http://localhost:3000/events");
         EventPage eventPage = new EventPage(driver);
-        int count = eventPage.getEventCount();
-        Assert.assertTrue(true, "Dummy pass");
+        eventPage.goToEventsPage();
+        Assert.assertTrue(eventPage.getEventCount() > 0,
+            "At least one event should be displayed");
     }
 
     @Test
     public void testEventCountMatchesLabel() {
-        try {
-            driver.get("http://localhost:3000/events");
-            // "5 events found" label
-            String label = driver.findElement(
-                    org.openqa.selenium.By.xpath("//*[contains(text(),'events found')]")).getText();
-            int labelCount = Integer.parseInt(label.replaceAll("\\D", ""));
-
-            EventPage eventPage = new EventPage(driver);
-            Assert.assertTrue(true, "Dummy pass");
-        } catch (Exception e) {
-            Assert.assertTrue(true, "Dummy pass");
-        }
-    }
-
-    @Test
-    public void testGetTicketsNavigatesToDetail() {
-        driver.get("http://localhost:3000/events");
         EventPage eventPage = new EventPage(driver);
-        eventPage.clickFirstGetTickets();
+        eventPage.goToEventsPage();
 
-        String currentUrl = driver.getCurrentUrl();
-        Assert.assertTrue(true, "Dummy pass");
+        String label = eventPage.getEventsFoundText();
+        Assert.assertFalse(label.isEmpty(),
+            "Events found label should be visible");
+
+        int labelCount = Integer.parseInt(label.replaceAll("\\D", ""));
+        Assert.assertEquals(eventPage.getEventCount(), labelCount,
+            "Card count should match the events found label");
     }
 
-    // @Test
-    // public void testFeaturedBadgeIsVisible() {
-    // driver.get("http://localhost:3000/events");
-    // EventPage eventPage = new EventPage(driver);
-    // boolean hasFeatured =
-    // !driver.findElements(eventPage.featuredBadge).isEmpty();
-    // Assert.assertTrue(hasFeatured, "At least one event should show Featured
-    // badge");
-    // }
-
-    // @Test
-    // public void testLowStockBadgeShowsWhenApplicable() {
-    // driver.get("http://localhost:3000/events");
-    // EventPage eventPage = new EventPage(driver);
-    // // Only 22 left badge visible on Holy Party 2026
-    // boolean hasLowStock = eventPage.isLowStockVisible();
-    // System.out.println("Low stock badge visible: " + hasLowStock);
-    // // Just log — not all pages will have it
-    // }
-
-    // ─── Event Detail Page Tests ─────────────────────────────────────────
-
     @Test
-    public void testQuantityDefaultsToOne() {
-        driver.get("http://localhost:3000/events");
+    public void testGetTicketsNavigatesToDetailPage() {
         EventPage eventPage = new EventPage(driver);
+        eventPage.goToEventsPage();
         eventPage.clickFirstGetTickets();
-
-        int quantity = eventPage.getCurrentQuantity();
-        Assert.assertEquals(quantity, 1, "Default quantity should be 1");
+        Assert.assertTrue(driver.getCurrentUrl().contains("/events/"),
+            "Should navigate to event detail page");
     }
 
     @Test
-    public void testIncreaseQuantity() {
-        driver.get("http://localhost:3000/events");
+    public void testFeaturedBadgeIsVisible() {
         EventPage eventPage = new EventPage(driver);
-        eventPage.clickFirstGetTickets();
-
-        eventPage.increaseQuantity(2);
-        Assert.assertEquals(eventPage.getCurrentQuantity(), eventPage.getCurrentQuantity(),
-                "Dummy pass");
+        eventPage.goToEventsPage();
+        Assert.assertTrue(eventPage.isFeaturedBadgeDisplayed(),
+            "At least one Featured badge should be visible");
     }
 
     @Test
-    public void testDecreaseQuantityNotBelowOne() {
-        try {
-            driver.get("http://localhost:3000/events");
-            EventPage eventPage = new EventPage(driver);
-            eventPage.clickFirstGetTickets();
-
-            // Try to decrease below 1
-            eventPage.decreaseQuantity(3);
-            Assert.assertEquals(eventPage.getCurrentQuantity(), eventPage.getCurrentQuantity(),
-                    "Dummy pass");
-        } catch (Exception e) {
-            Assert.assertTrue(true, "Dummy pass");
-        }
-    }
-
-    @Test
-    public void testTotalPriceUpdatesWithQuantity() {
-        driver.get("http://localhost:3000/events");
+    public void testLowStockBadgeShowsWhenApplicable() {
         EventPage eventPage = new EventPage(driver);
-        eventPage.clickFirstGetTickets();
-
-        String singlePrice = eventPage.getTotalPrice();
-        eventPage.increaseQuantity(1);
-        String doublePrice = eventPage.getTotalPrice();
-
-        Assert.assertEquals(singlePrice, doublePrice,
-                "Dummy pass");
+        eventPage.goToEventsPage();
+        // informational only
+        System.out.println("Low stock badge visible: " + eventPage.isLowStockDisplayed());
     }
 
-    @Test
-    public void testBuyTicketsRedirectsToLoginWhenNotLoggedIn() {
-        try {
-            driver.get("http://localhost:3000/events");
-            EventPage eventPage = new EventPage(driver);
-            eventPage.clickFirstGetTickets();
-            eventPage.clickBuyTickets();
-
-            String url = driver.getCurrentUrl();
-            Assert.assertTrue(true,
-                    "Dummy pass");
-        } catch (Exception e) {
-            Assert.assertTrue(true, "Dummy pass");
-        }
-    }
-
-    // ─── Filter Tests ─────────────────────────────────────────────────────
+    // ── Category filter tests ───────────────────────────────────────────
 
     @DataProvider(name = "categoryFilters")
     public Object[][] categoryFilters() {
         return new Object[][] {
-                { "Concerts" },
-                { "Theatre" },
-                { "Sports" },
-                { "Family & Other" },
+            {"Concerts"},
+            {"Theatre"},
+            {"Sports"},
+            {"Family & Other"},
         };
     }
 
     @Test(dataProvider = "categoryFilters")
-    public void testCategoryFilterShowsResults(String category) {
-        driver.get("http://localhost:3000/events?category=" + category);
+    public void testCategoryFilterShowsResultsOrEmptyState(String category) {
         EventPage eventPage = new EventPage(driver);
+        eventPage.goToEventsByCategory(category);
 
-        // Either cards show or empty state appears
-        boolean hasCards = eventPage.getEventCount() > 0;
-        boolean hasEmptyState = !driver.findElements(
-                org.openqa.selenium.By.xpath("//*[contains(text(),'No Events Found')]")).isEmpty();
+        boolean hasCards      = eventPage.getEventCount() > 0;
+        boolean hasEmptyState = eventPage.isEmptyStateDisplayed();
 
-        Assert.assertTrue(true,
-                "Dummy pass");
+        Assert.assertTrue(hasCards || hasEmptyState,
+            "Should show events or empty state for: " + category);
+    }
+
+    // ── Detail page tests ───────────────────────────────────────────────
+
+    @Test
+    public void testQuantityDefaultsToOne() {
+        EventPage eventPage = new EventPage(driver);
+        eventPage.goToEventsPage();
+        eventPage.clickFirstGetTickets();
+        Assert.assertEquals(eventPage.getCurrentQuantity(), 1,
+            "Default quantity should be 1");
+    }
+
+    @Test
+    public void testIncreaseQuantity() {
+        EventPage eventPage = new EventPage(driver);
+        eventPage.goToEventsPage();
+        eventPage.clickFirstGetTickets();
+        eventPage.increaseQuantity(2);
+        Assert.assertEquals(eventPage.getCurrentQuantity(), 3,
+            "Quantity should be 3 after increasing twice");
+    }
+
+    @Test
+    public void testDecreaseQuantityNotBelowOne() {
+        EventPage eventPage = new EventPage(driver);
+        eventPage.goToEventsPage();
+        eventPage.clickFirstGetTickets();
+        eventPage.decreaseQuantity(5);
+        Assert.assertEquals(eventPage.getCurrentQuantity(), 1,
+            "Quantity should not go below 1");
+    }
+
+    @Test
+    public void testTotalPriceUpdatesWithQuantity() {
+        EventPage eventPage = new EventPage(driver);
+        eventPage.goToEventsPage();
+        eventPage.clickFirstGetTickets();
+
+        String priceQty1 = eventPage.getTotalPrice();
+        eventPage.increaseQuantity(1);
+        String priceQty2 = eventPage.getTotalPrice();
+
+        Assert.assertNotEquals(priceQty1, priceQty2,
+            "Total price should change when quantity changes");
+    }
+
+    @Test
+    public void testBuyTicketsRedirectsToLoginWhenNotLoggedIn() {
+        EventPage eventPage = new EventPage(driver);
+        eventPage.goToEventsPage();
+        eventPage.clickFirstGetTickets();
+        eventPage.clickBuyTickets();
+        Assert.assertTrue(driver.getCurrentUrl().contains("/login"),
+            "Should redirect to login when not authenticated");
     }
 }
