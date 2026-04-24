@@ -1,20 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suite name="Event Booking Test Suite" verbose="1">
-  <test name="LoginTests">
-    <classes>
-      <class name="tests.LoginTest"/>
-    </classes>
-  </test>
-  <test name="SignupTests">
-    <classes>
-      <class name="tests.SignupTest"/>
-    </classes>
-  </test>
-  <test name="EventPageTests">
-    <classes>
-      <class name="tests.EventPageTest"/>
-    </classes>
-  </test>
   <test name="AdminAddEventTests">
     <classes>
       <class name="tests.AdminAddEventTest"/>

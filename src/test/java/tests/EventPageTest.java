@@ -1,10 +1,11 @@
 package tests;
 
-import pages.EventPage;
-import base.BaseTest;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import base.BaseTest;
+import pages.EventPage;
 
 public class EventPageTest extends BaseTest {
 

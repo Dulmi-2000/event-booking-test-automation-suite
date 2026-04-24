@@ -3,13 +3,13 @@
 <suite name="Failed suite [Default suite]" guice-stage="DEVELOPMENT">
   <test thread-count="5" name="Default test(failed)">
     <classes>
-      <class name="tests.AdminAddEventTest">
+      <class name="tests.LoginTest">
         <methods>
-          <include name="tearDown"/>
           <include name="setup"/>
-          <include name="testCreateEvent"/>
+          <include name="tearDown"/>
+          <include name="testLogin" invocation-numbers="3 4 5"/>
         </methods>
-      </class> <!-- tests.AdminAddEventTest -->
+      </class> <!-- tests.LoginTest -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->
